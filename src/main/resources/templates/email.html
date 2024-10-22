@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<style>
+    p {
+        text-indent: 2em; /* 设置首行缩进的距离 */
+    }
+    table, tr, td {
+        border: none;
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>错误通知</title>
+</head>
+<body>
+    <h5>Dear: <span th:text="${userName}"/></h5>
+    <p>你好，本地事务消息投递到MQ时出错，且自动重试达到最大次数，请立即查看处理。</p>
+    <span>错误信息如下：</span>
+    <table>
+        <tr>
+            <th>消息Id</th>
+            <th>错误原因</th>
+            <th>消息内容</th>
+        </tr>
+        <tr>
+            <td th:text="${msgId}"/>
+            <td th:text="${msgFail}"/>
+            <td th:text="${msgBody}"/>
+        </tr>
+    </table>
+</body>
+</html>
