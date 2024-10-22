@@ -9,7 +9,9 @@ import com.wak.msgspringbootstarter.mail.MailServiceImpl;
 import com.wak.msgspringbootstarter.sender.DefaultMsgSenderImpl;
 import com.wak.msgspringbootstarter.sender.IMsgSender;
 import com.wak.msgspringbootstarter.service.IMsgService;
+import com.wak.msgspringbootstarter.service.ISequentialMsgNumberGeneratorService;
 import com.wak.msgspringbootstarter.service.impl.IMsgServiceImpl;
+import com.wak.msgspringbootstarter.service.impl.SequentialMsgNumberGeneratorServiceImpl;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -19,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * @author wuankang
@@ -86,6 +89,16 @@ public class MsgAutoConfiguration {
         return new DefaultLocalLock();
     }
 
+    @Bean
+    public TransactionTemplate transactionTemplate() {
+        return new TransactionTemplate();
+    }
+
+    @Bean
+    public ISequentialMsgNumberGeneratorService numberGeneratorService() {
+        return new SequentialMsgNumberGeneratorServiceImpl();
+    }
+
     /**
      * 默认消息发件人暗示
      *
@@ -93,7 +106,7 @@ public class MsgAutoConfiguration {
      */
     @Bean
     public IMsgSender msgSender() {
-        return new DefaultMsgSenderImpl(msgService(), mailService(), rabbitTemplate, threadPoolTaskExecutor, delayMsgProcessor(), delaySendRetryProcessor(), localLock());
+        return new DefaultMsgSenderImpl(msgService(), mailService(), rabbitTemplate, threadPoolTaskExecutor, delayMsgProcessor(), delaySendRetryProcessor(), localLock(), transactionTemplate(), numberGeneratorService());
     }
 
     /**
