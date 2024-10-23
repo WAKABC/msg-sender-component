@@ -18,7 +18,6 @@ import java.util.Objects;
  * @Description TODO
  * @Version 1.0
  */
-@Service
 public class SequentialMsgConsumePositionServiceImpl extends ServiceImpl<SequentialMsgConsumeInfoMapper, SequentialMsgConsumePositionPO> implements ISequentialMsgConsumePositionService {
     @Override
     @Transactional(rollbackFor = Exception.class)

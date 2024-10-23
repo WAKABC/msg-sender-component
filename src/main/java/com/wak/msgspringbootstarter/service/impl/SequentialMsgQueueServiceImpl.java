@@ -19,7 +19,6 @@ import java.util.Objects;
  * @Description TODO 顺序消息服务
  * @Version 1.0
  */
-@Service
 public class SequentialMsgQueueServiceImpl extends ServiceImpl<SequentialMsgQueueMapper, SequentialMsgQueuePO> implements ISequentialMsgQueueService {
 
     @Override

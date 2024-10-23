@@ -9,9 +9,13 @@ import com.wak.msgspringbootstarter.mail.MailServiceImpl;
 import com.wak.msgspringbootstarter.sender.DefaultMsgSenderImpl;
 import com.wak.msgspringbootstarter.sender.IMsgSender;
 import com.wak.msgspringbootstarter.service.IMsgService;
+import com.wak.msgspringbootstarter.service.ISequentialMsgConsumePositionService;
 import com.wak.msgspringbootstarter.service.ISequentialMsgNumberGeneratorService;
+import com.wak.msgspringbootstarter.service.ISequentialMsgQueueService;
 import com.wak.msgspringbootstarter.service.impl.IMsgServiceImpl;
+import com.wak.msgspringbootstarter.service.impl.SequentialMsgConsumePositionServiceImpl;
 import com.wak.msgspringbootstarter.service.impl.SequentialMsgNumberGeneratorServiceImpl;
+import com.wak.msgspringbootstarter.service.impl.SequentialMsgQueueServiceImpl;
 import jakarta.annotation.Resource;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -100,11 +104,6 @@ public class MsgAutoConfiguration {
         return new DefaultLocalLock();
     }
 
-    @Bean
-    public ISequentialMsgNumberGeneratorService numberGeneratorService() {
-        return new SequentialMsgNumberGeneratorServiceImpl();
-    }
-
     /**
      * 默认消息发件人暗示
      *
@@ -129,5 +128,20 @@ public class MsgAutoConfiguration {
     @Bean
     public MsgSendRetryJob msgSendRetryJob() {
         return new MsgSendRetryJob(msgService(), msgSender());
+    }
+
+    @Bean
+    public ISequentialMsgQueueService msgQueueService(){
+        return new SequentialMsgQueueServiceImpl();
+    }
+
+    @Bean
+    public ISequentialMsgConsumePositionService consumePositionService(){
+        return new SequentialMsgConsumePositionServiceImpl();
+    }
+
+    @Bean
+    public ISequentialMsgNumberGeneratorService numberGeneratorService() {
+        return new SequentialMsgNumberGeneratorServiceImpl();
     }
 }
