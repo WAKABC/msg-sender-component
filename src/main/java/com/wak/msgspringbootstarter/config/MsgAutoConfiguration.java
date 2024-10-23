@@ -36,17 +36,19 @@ import org.springframework.transaction.support.TransactionTemplate;
 @Configuration
 @EnableConfigurationProperties(MsgDelayQueueProperties.class)
 @MapperScan("com.wak.msgspringbootstarter.mapper")
-@Import({ThreadPoolConfiguration.class,
-        RabbitMQConfiguration.class,
-        TraceConfiguration.class,
-        MyBatisPlusConfiguration.class
+@Import({
+    ThreadPoolConfiguration.class,
+    RabbitMQConfiguration.class,
+    TraceConfiguration.class,
+    MyBatisPlusConfiguration.class
 })
 @EnableScheduling
 public class MsgAutoConfiguration {
     /**
      * 延迟队列属性类
      */
-    private final MsgDelayQueueProperties properties;
+    @Resource
+    private MsgDelayQueueProperties properties;
     /**
      * 线程池任务执行器
      */
@@ -62,10 +64,6 @@ public class MsgAutoConfiguration {
      */
     @Resource
     private TransactionTemplate transactionTemplate;
-
-    public MsgAutoConfiguration(MsgDelayQueueProperties properties) {
-        this.properties = properties;
-    }
 
     /**
      * 延迟消息处理器
