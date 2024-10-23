@@ -78,7 +78,7 @@ create table if not exists t_sequential_msg_number_generator
     numbering bigint       not null comment '消息编号',
     version   bigint       not null default 0 comment '版本号，每次更新+1',
     unique key uq_group_id (group_id)
-) comment '顺序消息排队表';
+) comment '顺序消息编号生成表';
 
 -- 顺序消息消费信息表，(group_id、queue_name)中的消息消费到哪里了？
 drop table if exists t_sequential_msg_consume_position;
