@@ -38,7 +38,7 @@ public class DefaultLocalLock implements LocalLock {
         boolean flag = reentrantLock.tryLock();
         try {
             if (log.isInfoEnabled()) {
-                log.info("get lock:[{}],[{}]", lockKey, flag);
+                log.info("thread:[{}], key:[{}] get lock: [{}]", Thread.currentThread().getName(), lockKey, flag);
             }
             if (!flag) {
                 return false;
@@ -55,7 +55,7 @@ public class DefaultLocalLock implements LocalLock {
     @Override
     public void accept(String lockKey, Consumer<String> consumer, Function<String, ? extends RuntimeException> lockFailException) {
         boolean success = this.accept(lockKey, consumer);
-        if (!success){
+        if (!success) {
             throw lockFailException.apply(lockKey);
         }
     }
