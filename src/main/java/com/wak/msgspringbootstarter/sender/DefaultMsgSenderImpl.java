@@ -388,11 +388,12 @@ public class DefaultMsgSenderImpl implements IMsgSender {
     @Override
     public void sendSequentialMsg(String busId, String exchange, String routingKey, MessageEnvelope<?> msg) {
         //同一个groupId的顺序消费
-        String groupId = String.format("busId:%s,exchange:%s,routingKey:%s", busId, StrUtil.emptyIfNull(exchange), StrUtil.emptyIfNull(routingKey));
+        String groupId = String.format("%s-%s-%s", busId, StrUtil.emptyIfNull(exchange), StrUtil.emptyIfNull(routingKey));
         localLock.accept(groupId, lock -> {
             this.transactionTemplate.executeWithoutResult(action -> {
+                long numbering = this.msgNumberGeneratorService.get(groupId);
                 msg.setSequentialMsgGroupId(groupId);
-                msg.setSequentialMsgNumbering(this.msgNumberGeneratorService.get(groupId));
+                msg.setSequentialMsgNumbering(numbering);
                 this.send(exchange, routingKey, msg);
             });
         });
