@@ -12,13 +12,17 @@ import com.wak.msgspringbootstarter.service.IMsgService;
 import com.wak.msgspringbootstarter.service.ISequentialMsgNumberGeneratorService;
 import com.wak.msgspringbootstarter.service.impl.IMsgServiceImpl;
 import com.wak.msgspringbootstarter.service.impl.SequentialMsgNumberGeneratorServiceImpl;
+import jakarta.annotation.Resource;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -32,7 +36,11 @@ import org.springframework.transaction.support.TransactionTemplate;
 @Configuration
 @EnableConfigurationProperties(MsgDelayQueueProperties.class)
 @MapperScan("com.wak.msgspringbootstarter.mapper")
-@Import({ThreadPoolConfiguration.class, RabbitMQConfiguration.class, TraceConfiguration.class, MyBatisPlusConfiguration.class})
+@Import({ThreadPoolConfiguration.class,
+        RabbitMQConfiguration.class,
+        TraceConfiguration.class,
+        MyBatisPlusConfiguration.class
+})
 @EnableScheduling
 public class MsgAutoConfiguration {
     /**
@@ -42,16 +50,21 @@ public class MsgAutoConfiguration {
     /**
      * 线程池任务执行器
      */
-    private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Resource
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
     /**
      * rabbitmq
      */
-    private final RabbitTemplate rabbitTemplate;
+    @Resource
+    private RabbitTemplate rabbitTemplate;
+    /**
+     * transaction
+     */
+    @Resource
+    private TransactionTemplate transactionTemplate;
 
-    public MsgAutoConfiguration(MsgDelayQueueProperties properties, ThreadPoolTaskExecutor threadPoolTaskExecutor, RabbitTemplate rabbitTemplate) {
+    public MsgAutoConfiguration(MsgDelayQueueProperties properties) {
         this.properties = properties;
-        this.threadPoolTaskExecutor = threadPoolTaskExecutor;
-        this.rabbitTemplate = rabbitTemplate;
     }
 
     /**
@@ -90,11 +103,6 @@ public class MsgAutoConfiguration {
     }
 
     @Bean
-    public TransactionTemplate transactionTemplate() {
-        return new TransactionTemplate();
-    }
-
-    @Bean
     public ISequentialMsgNumberGeneratorService numberGeneratorService() {
         return new SequentialMsgNumberGeneratorServiceImpl();
     }
@@ -106,7 +114,7 @@ public class MsgAutoConfiguration {
      */
     @Bean
     public IMsgSender msgSender() {
-        return new DefaultMsgSenderImpl(msgService(), mailService(), rabbitTemplate, threadPoolTaskExecutor, delayMsgProcessor(), delaySendRetryProcessor(), localLock(), transactionTemplate(), numberGeneratorService());
+        return new DefaultMsgSenderImpl(msgService(), mailService(), rabbitTemplate, threadPoolTaskExecutor, delayMsgProcessor(), delaySendRetryProcessor(), localLock(), transactionTemplate, numberGeneratorService());
     }
 
     /**
