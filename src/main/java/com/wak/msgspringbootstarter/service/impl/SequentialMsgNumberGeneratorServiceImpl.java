@@ -36,6 +36,7 @@ public class SequentialMsgNumberGeneratorServiceImpl extends ServiceImpl<Sequent
         SequentialMsgNumberGeneratorPO sequentialMsgNumberGeneratorPO = this.findByGroupId(groupId);
         //numbering++
         long numbering = sequentialMsgNumberGeneratorPO.getNumbering() + 1;
+        sequentialMsgNumberGeneratorPO.setNumbering(numbering);
         //update
         boolean success = this.updateById(sequentialMsgNumberGeneratorPO);
         if (!success){
