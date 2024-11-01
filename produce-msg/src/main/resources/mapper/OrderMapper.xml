@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wak.zystudyreview.mapper.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.wak.zystudyreview.entities.OrderPO">
+    <!--@mbg.generated-->
+    <!--@Table t_order-->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="goods" jdbcType="VARCHAR" property="goods" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, goods, price
+  </sql>
+</mapper>
