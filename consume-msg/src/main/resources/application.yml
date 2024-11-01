@@ -1,0 +1,53 @@
+
+spring:
+  application:
+    name: consume-msg
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.118.103:3306/mq_design?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 10
+      connection-timeout: 60000
+      idle-timeout: 60000
+      max-lifetime: 1800000
+      connection-test-query: select 1
+
+  rabbitmq:
+    host: 192.168.118.103
+    port: 5672
+    virtual-host: /
+    username: guest
+    password: guest
+    listener:
+      simple:
+        acknowledge-mode: auto
+    connection-timeout: 3000
+    template:
+      default-receive-queue: orderQueue
+  mail:
+    default-encoding: utf-8
+    host: smtp.163.com
+    username: wuankang588@163.com
+    password: KFZFhzsRhhZitXQW
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.wak.zystudyreview.entities
+  configuration:
+    map-underscore-to-camel-case: true
+
+server:
+  port: 7777
+
+thread:
+  pool:
+    core-pool-size: 5
+    max-pool-size: 5
+    keep-alive-time: 3
+    queue-capacity: 100
